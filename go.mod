@@ -8,5 +8,5 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.2.2
 	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc // indirect
-	gopkg.in/resty.v1 v1.10.2 // indirect
+	gopkg.in/resty.v1 v1.10.2
 )
