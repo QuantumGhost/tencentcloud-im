@@ -8,21 +8,20 @@ import (
 	"time"
 )
 
-
 const (
-	tencentCloudIMBaseUrl = "https://console.tim.qq.com/v4"
+	tencentCloudIMBaseUrl     = "https://console.tim.qq.com/v4"
 	tencentCloudIMAPIEndpoint = tencentCloudIMBaseUrl + "/{serviceName}/{command}"
 )
 
 const (
 	Service_IM_OPEN_LOGIN_SVC = "im_open_login_svc"
-	Service_OPEN_IM = "openim"
+	Service_OPEN_IM           = "openim"
 )
 
 const (
-	Command_ACCOUNT_IMPORT = "account_import"
+	Command_ACCOUNT_IMPORT      = "account_import"
 	Command_MULTIACCOUNT_IMPORT = "multiaccount_import"
-	Command_SEND_MSG = "sendmsg"
+	Command_SEND_MSG            = "sendmsg"
 )
 
 type IMResponse struct {
@@ -69,7 +68,7 @@ type Client struct {
 }
 
 func (c *Client) preRequestHook(_ *resty.Client, req *resty.Request) error {
-	req.SetQueryParam("random", strconv.Itoa(rand.Intn(1 << 31 - 1)))
+	req.SetQueryParam("random", strconv.Itoa(rand.Intn(1<<31-1)))
 	return nil
 }
 

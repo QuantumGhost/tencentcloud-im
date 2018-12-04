@@ -18,25 +18,25 @@ const (
 	encodeSign = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789*-"
 	bufSize    = 300
 )
+
 var signEncoding = base64.NewEncoding(encodeSign).WithPadding('_')
 
 type tlsJSONPayload struct {
 	AppIDAt3rd  string `json:"TLS.appid_at_3rd"`
-    AccountType string `json:"TLS.account_type"`
-    Identifier  string `json:"TLS.identifier"`
+	AccountType string `json:"TLS.account_type"`
+	Identifier  string `json:"TLS.identifier"`
 	SDKAppId    string `json:"TLS.sdk_appid"`
 	// 创建时间戳，精确到秒
-	Time        string `json:"TLS.time"`
+	Time string `json:"TLS.time"`
 	// 过期时间，精确到秒
 	ExpireAfter string `json:"TLS.expire_after"`
-    Version     string `json:"TLS.version"`
+	Version     string `json:"TLS.version"`
 	Signature   string `json:"TLS.sig"`
 }
 
-
 func (p *tlsJSONPayload) ToSignString() string {
 	const (
-		LINE_END = '\n'
+		LINE_END  = '\n'
 		SEPERATOR = ':'
 	)
 
@@ -51,7 +51,7 @@ func (p *tlsJSONPayload) ToSignString() string {
 	}
 	for index, value := range pairs {
 		buf.WriteString(value)
-		if index % 2 == 0 {
+		if index%2 == 0 {
 			buf.WriteRune(SEPERATOR)
 		} else {
 			buf.WriteRune(LINE_END)
@@ -151,11 +151,11 @@ func (s *Signer) Verify(urlSig string, identifier string) (CheckTLSSignatureResu
 }
 
 type Signer struct {
-	appId   int
-	appIdStr string
-	accountType int
+	appId          int
+	appIdStr       string
+	accountType    int
 	accountTypeStr string
-	privKey openssl.PrivateKey
+	privKey        openssl.PrivateKey
 	// for testing purpose, defaults to time.Now
 	timeFunc func() time.Time
 }

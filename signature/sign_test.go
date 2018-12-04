@@ -65,7 +65,7 @@ func TestSigner_SignAndVerify(t *testing.T) {
 		value, ok := quick.Value(reflect.TypeOf(""), testRand)
 		assert.True(t, ok)
 		str := value.Interface().(string)
-		sig, err := signer.Sign(str, 720 * time.Hour)
+		sig, err := signer.Sign(str, 720*time.Hour)
 		assert.NoError(t, err)
 		assert.True(t, sig.Valid)
 		verify, err := signer.Verify(sig.UrlSig, str)
@@ -93,8 +93,8 @@ func TestSigner_Verify(t *testing.T) {
 		testingIdentifier     = "tencentcloud-im-test-user"
 		expectedInitTimestamp = 1543885094
 		expectedExpireAfter   = 3600
-		testingSig = `eJw1jl1PgzAUhv8Lt4oW2jJq4gVhm1mEZHPDTGJCgJZ5lI8GCroZ-7sdY*fuPM978p5fYxds79I8b-paJeoohfFgWBTbDDHqMON29MBFraAA0WqrRJ3rNS*bnptQmUp0yuw77S7hVErgSaoS3HIdRxPu*FcyqnMBQchyZha1Jil*JLQiSQs1VmAHXc8G0XbQ1BraSOdtjM4zSQXV5V*CXZciRq5dcNA4XET*ytt7c29eFlsrZu-3zlAccB5G2cd*pl5f*Gd2s3Or02ZNWVw*e7DwkGTQMCGXJAj84LShZeMc8be-Uu6yJHHcZSQa3PVb*IQejb9-g2hf9A__`
-		testingSig2 = `eJw1jl1vgkAQRf-Lvra0CwvINumDaBO1YmvQ*JEmZGEH3CofhYUoTf97V8R5m3Pu5M4vWs39JxZFeZ3JQF4KQC9It4hBMbVsih47LzhkUsQCSmUlZJFao1Nec02kmoRKanWl3C3MikLwgMmAlFzFcY8rfgw6dS0wMdbtgW7pvYRzIUoIWCy7CmLj*1kDZSXyTEEDq7xB8HV6KUV6*9ckjmNhat67RKKw97YeTZej2t89jA80bIfbjQAnTNLPhhaLr2db5z*bldu2bFLNgEfb9XKazJrjOKVm85GfHWYa3*nEduOQHNzLnoPFT7LZe*27P1jMvVf09w-dGGHE`
+		testingSig            = `eJw1jl1PgzAUhv8Lt4oW2jJq4gVhm1mEZHPDTGJCgJZ5lI8GCroZ-7sdY*fuPM978p5fYxds79I8b-paJeoohfFgWBTbDDHqMON29MBFraAA0WqrRJ3rNS*bnptQmUp0yuw77S7hVErgSaoS3HIdRxPu*FcyqnMBQchyZha1Jil*JLQiSQs1VmAHXc8G0XbQ1BraSOdtjM4zSQXV5V*CXZciRq5dcNA4XET*ytt7c29eFlsrZu-3zlAccB5G2cd*pl5f*Gd2s3Or02ZNWVw*e7DwkGTQMCGXJAj84LShZeMc8be-Uu6yJHHcZSQa3PVb*IQejb9-g2hf9A__`
+		testingSig2           = `eJw1jl1vgkAQRf-Lvra0CwvINumDaBO1YmvQ*JEmZGEH3CofhYUoTf97V8R5m3Pu5M4vWs39JxZFeZ3JQF4KQC9It4hBMbVsih47LzhkUsQCSmUlZJFao1Nec02kmoRKanWl3C3MikLwgMmAlFzFcY8rfgw6dS0wMdbtgW7pvYRzIUoIWCy7CmLj*1kDZSXyTEEDq7xB8HV6KUV6*9ckjmNhat67RKKw97YeTZej2t89jA80bIfbjQAnTNLPhhaLr2db5z*bldu2bFLNgEfb9XKazJrjOKVm85GfHWYa3*nEduOQHNzLnoPFT7LZe*27P1jMvVf09w-dGGHE`
 	)
 	signer, err := NewSigner(testingAppId, testingAccountType, testingPrivKey)
 	assert.NoError(t, err)
@@ -104,7 +104,7 @@ func TestSigner_Verify(t *testing.T) {
 		assert.True(t, check.Valid, "sig not valid for case %d", i)
 		assert.Equal(t, int64(expectedInitTimestamp), check.InitTime.Unix(),
 			"InitTime incorrect for case %d", i)
-		assert.Equal(t, time.Duration(expectedExpireAfter) * time.Second, check.ExpireAfter,
+		assert.Equal(t, time.Duration(expectedExpireAfter)*time.Second, check.ExpireAfter,
 			"ExpireAfter incorrect for case %d", i)
 	}
 }
