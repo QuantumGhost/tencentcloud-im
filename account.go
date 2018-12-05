@@ -22,6 +22,35 @@ func (c *Client) AccountImport(ctx context.Context, request AccountImportRequest
 	return result
 }
 
-func (c *Client) MultiAccountImport(identifiers []string) *IMResponse {
-	panic("not implemented")
+type MultiAccountImportResponse struct {
+	IMResponse
+	FailAccounts []string `json:"FailAccounts"`
+}
+
+func (c *Client) MultiAccountImport(ctx context.Context, identifiers []string) *MultiAccountImportResponse {
+	type multiAccountImportRequest struct {
+		Accounts []string `json:"Accounts"`
+	}
+	req := c.newRequest(ctx, Service_IM_OPEN_LOGIN_SVC, Command_MULTIACCOUNT_IMPORT)
+	result := &MultiAccountImportResponse{}
+	_, err := req.SetBody(multiAccountImportRequest{Accounts: identifiers}).SetResult(result).
+		Post(tencentCloudIMAPIEndpoint)
+	if err != nil {
+		result.internal = errors.Wrap(err, "error while multiaccount import")
+	}
+	return result
+}
+
+func (c *Client) Kick(ctx context.Context, identifier string) *IMResponse {
+	type kickRequest struct {
+		Identifier string `json:"Identifier"`
+	}
+	req := c.newRequest(ctx, Service_IM_OPEN_LOGIN_SVC, Command_KICK)
+	result := &IMResponse{}
+	_, err := req.SetBody(kickRequest{Identifier: identifier}).SetResult(result).
+		Post(tencentCloudIMAPIEndpoint)
+	if err != nil {
+		result.internal = errors.Wrap(err, "error while kick user")
+	}
+	return result
 }

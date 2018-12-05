@@ -19,9 +19,14 @@ const (
 )
 
 const (
+	// im_open_login_svc
 	Command_ACCOUNT_IMPORT      = "account_import"
 	Command_MULTIACCOUNT_IMPORT = "multiaccount_import"
-	Command_SEND_MSG            = "sendmsg"
+	Command_KICK                = "kick"
+	// openim
+	Command_SEND_MSG       = "sendmsg"
+	Command_BATCH_SEND_MSG = "batchsendmsg"
+	Command_QUERY_STATE    = "querystate"
 )
 
 type IMResponse struct {
