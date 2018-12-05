@@ -9,6 +9,15 @@ import (
 )
 
 type SyncSetting int
+
+func (s SyncSetting) ApplyToBatchSendMsgRequest(req *BatchSendMsgRequest) {
+	req.SyncOtherMachine = s
+}
+
+func (s SyncSetting) ApplyToSendMsgRequest(req *SendMsgRequest) {
+	req.SyncOtherMachine = s
+}
+
 type MsgType string
 
 const (
@@ -24,11 +33,23 @@ const (
 )
 
 type SendMsgOpt interface {
-	ApplyToSendMsgRequest(*SendMsgRequest)
+	ApplyToSendMsgRequest(req *SendMsgRequest)
 }
 
 type BatchSendMsgOpt interface {
-	ApplyToBatchSendMsgRequest(*BatchSendMsgRequest)
+	ApplyToBatchSendMsgRequest(req *BatchSendMsgRequest)
+}
+
+type sendMsgOptFunc func(req *SendMsgRequest)
+
+func (f sendMsgOptFunc) ApplyToSendMsgRequest(req *SendMsgRequest) {
+	f(req)
+}
+
+func MsgLifeTime(lifeTime int) SendMsgOpt {
+	return sendMsgOptFunc(func(req *SendMsgRequest) {
+		req.MsgLifeTime = lifeTime
+	})
 }
 
 type SendMsgRequest struct {
@@ -140,7 +161,7 @@ func (c *Client) SendMsg(ctx context.Context, from string, to string, bodies []M
 }
 
 func (c *Client) BatchSendMsg(ctx context.Context, from string, to []string, bodies []MsgBody, opts ...BatchSendMsgOpt) *IMResponse {
-	req := c.newRequest(ctx, Service_OPEN_IM, Command_SEND_MSG)
+	req := c.newRequest(ctx, Service_OPEN_IM, Command_BATCH_SEND_MSG)
 	payload := newBatchSendMsgRequest()
 	payload.FromAccount = from
 	payload.ToAccount = to
