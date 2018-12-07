@@ -2,7 +2,6 @@ package tencentcloud_im
 
 import (
 	"context"
-	"fmt"
 	"github.com/pkg/errors"
 	"math/rand"
 	"time"
@@ -152,8 +151,7 @@ func (c *Client) SendMsg(ctx context.Context, from string, to string, bodies []M
 		opt.ApplyToSendMsgRequest(&payload)
 	}
 	result := &IMResponse{}
-	resp, err := req.SetResult(result).SetBody(&payload).Post(tencentCloudIMAPIEndpoint)
-	fmt.Println(resp)
+	_, err := req.SetResult(result).SetBody(&payload).Post(tencentCloudIMAPIEndpoint)
 	if err != nil {
 		result.internal = errors.Wrap(err, "error while sendmsg")
 	}
