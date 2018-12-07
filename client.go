@@ -2,6 +2,7 @@ package tencentcloud_im
 
 import (
 	"context"
+	"fmt"
 	"gopkg.in/resty.v1"
 	"math/rand"
 	"strconv"
@@ -32,37 +33,52 @@ const (
 type IMResponse struct {
 	ActionStatus string `json:"ActionStatus"`
 	ErrorInfo    string `json:"ErrorInfo"`
-	ErrorCode    int    `json:"ErrorCode"`
-	internal     error  `json:"-"`
+	ErrorCode    int    `json:"errorCode"`
+	internal     error
+	imErr        IMError
 }
 
-func (r *IMResponse) Error() string {
+type IMError interface {
+	error
+	ErrorInfo() string
+	ErrorCode() int
+}
+
+type imError struct {
+	actionStatus string
+	errorInfo    string
+	errorCode    int
+}
+
+func (e *imError) ErrorInfo() string {
+	return e.errorInfo
+}
+
+func (e *imError) ErrorCode() int {
+	return e.errorCode
+}
+
+func (e *imError) Error() string {
+	return fmt.Sprintf("Error from tencentcloud, desc %s, code %d", e.errorInfo, e.errorCode)
+}
+
+func (r *IMResponse) Error() error {
 	if r.internal != nil {
-		return r.internal.Error()
+		return r.internal
 	}
-	return r.ErrorInfo
-}
-
-func (r *IMResponse) Succeed() bool {
-	return r.ErrorCode == 0 && r.internal == nil
-}
-
-func GetErrorCode(err error) (int, bool) {
-	if r, ok := err.(*IMResponse); ok {
-		return r.ErrorCode, true
+	if r.ErrorCode == 0 {
+		return nil
 	}
-	return 0, false
-}
-
-func GetInternalError(err error) (error, bool) {
-	if r, ok := err.(*IMResponse); ok {
-		return r.internal, true
+	if r.imErr != nil {
+		return r.imErr
 	}
-	return nil, false
+	r.imErr = &imError{errorCode: r.ErrorCode, errorInfo: r.ErrorInfo, actionStatus: r.ActionStatus}
+	return r.imErr
 }
 
-func (r *IMResponse) Cause() error {
-	return r.internal
+func ToIMError(err error) (IMError, bool) {
+	r, ok := err.(*imError)
+	return r, ok
 }
 
 type Client struct {
