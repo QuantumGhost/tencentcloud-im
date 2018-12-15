@@ -99,6 +99,9 @@ func (s *Signer) Sign(identifier string, expireAfter time.Duration) (TLSSignatur
 		return TLSSignature{}, errors.Wrap(err, "error while marshalling json")
 	}
 	compressed, err := zlibCompress(jsonBytes)
+	if err != nil {
+		return TLSSignature{}, err
+	}
 	escaped := signEncoding.EncodeToString(compressed)
 	return TLSSignature{
 		UrlSig: escaped, ExpireTime: expireAt, InitTime: now,

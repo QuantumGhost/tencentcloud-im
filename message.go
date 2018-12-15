@@ -20,8 +20,8 @@ func (s SyncSetting) ApplyToSendMsgRequest(req *SendMsgRequest) {
 type MsgType string
 
 const (
-	SyncToFromAccunt       SyncSetting = 1
-	DonotSyncToFromAccount             = 2
+	SyncSetting_SyncToFromAccunt       SyncSetting = 1
+	SyncSetting_DonotSyncToFromAccount             = 2
 )
 
 const (
@@ -177,7 +177,7 @@ func (c *Client) BatchSendMsg(ctx context.Context, from string, to []string, bod
 
 func newSendMsgRequest() SendMsgRequest {
 	return SendMsgRequest{
-		SyncOtherMachine: SyncToFromAccunt,
+		SyncOtherMachine: SyncSetting_SyncToFromAccunt,
 		MsgLifeTime:      604800,
 		MsgRandom:        int(rand.Int31()),
 		MsgTimeStamp:     int(time.Now().Unix()),
@@ -218,7 +218,21 @@ type BatchSendMsgRequest struct {
 
 func newBatchSendMsgRequest() BatchSendMsgRequest {
 	return BatchSendMsgRequest{
-		SyncOtherMachine: SyncToFromAccunt,
+		SyncOtherMachine: SyncSetting_SyncToFromAccunt,
 		MsgRandom:        int(rand.Int31()),
 	}
+}
+
+type doNotSyncToFromAccount struct{}
+
+func (doNotSyncToFromAccount) ApplyToBatchSendMsgRequest(req *BatchSendMsgRequest) {
+	req.SyncOtherMachine = SyncSetting_DonotSyncToFromAccount
+}
+
+func (doNotSyncToFromAccount) ApplyToSendMsgRequest(req *SendMsgRequest) {
+	req.SyncOtherMachine = SyncSetting_DonotSyncToFromAccount
+}
+
+func DoNotSyncToFromAccount() doNotSyncToFromAccount {
+	return doNotSyncToFromAccount{}
 }

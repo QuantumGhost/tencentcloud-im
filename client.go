@@ -17,6 +17,7 @@ const (
 const (
 	Service_IM_OPEN_LOGIN_SVC = "im_open_login_svc"
 	Service_OPEN_IM           = "openim"
+	Service_PROFILE           = "profile"
 )
 
 const (
@@ -28,6 +29,8 @@ const (
 	Command_SEND_MSG       = "sendmsg"
 	Command_BATCH_SEND_MSG = "batchsendmsg"
 	Command_QUERY_STATE    = "querystate"
+	// profile
+	Command_PORTRAIT_SET = "portrait_set"
 )
 
 type IMResponse struct {
