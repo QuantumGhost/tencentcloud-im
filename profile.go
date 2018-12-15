@@ -39,7 +39,7 @@ type PortraitSetRequest struct {
 
 func (c *Client) PortraitSet(ctx context.Context, accountId string, items []ProfileItem) *PortraitSetResponse {
 	req := c.newRequest(ctx, Service_PROFILE, Command_PORTRAIT_SET)
-	payload := &PortraitSetRequest{FromAccount: accountId, ProfileItem: items}
+	payload := PortraitSetRequest{FromAccount: accountId, ProfileItem: items}
 	result := &PortraitSetResponse{}
 	_, err := req.SetResult(result).SetBody(&payload).Post(tencentCloudIMAPIEndpoint)
 	if err != nil {
