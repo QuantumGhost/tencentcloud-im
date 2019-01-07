@@ -3,6 +3,8 @@ package tencentcloud_im
 import (
 	"context"
 	"fmt"
+	"github.com/QuantumGhost/tencentcloud-im/ctxutil"
+	"github.com/QuantumGhost/tencentcloud-im/events"
 	"gopkg.in/resty.v1"
 	"math/rand"
 	"strconv"
@@ -95,10 +97,34 @@ type Client struct {
 	adminIdentifier string
 	userSig         string
 	client          *resty.Client
+	listener        events.EventListener
 }
 
 func (c *Client) preRequestHook(_ *resty.Client, req *resty.Request) error {
 	req.SetQueryParam("random", strconv.Itoa(rand.Intn(1<<31-1)))
+	ctx := ctxutil.SetRequestStartTime(req.RawRequest.Context(), time.Now())
+	req.SetContext(ctx)
+	return nil
+}
+
+func (c *Client) postRequestHook(_ *resty.Client, resp *resty.Response) error {
+	ctx := resp.Request.RawRequest.Context()
+	startTime, ok := ctxutil.GetRequestStartTime(ctx)
+	if !ok {
+		return nil
+	}
+
+	serviceName, hasServiceName := ctxutil.GetServiceName(ctx)
+	command, hasCommand := ctxutil.GetCommand(ctx)
+	if hasServiceName && hasCommand {
+		pairs := events.NewPairs(
+			events.KV(events.ServiceName, serviceName),
+			events.KV(events.CommandName, command),
+		)
+		c.listener.TimingKv(events.RequestDuration, time.Now().Sub(startTime).Nanoseconds(), pairs)
+	} else {
+		c.listener.Timing(events.RequestDuration, time.Now().Sub(startTime).Nanoseconds())
+	}
 	return nil
 }
 
@@ -110,7 +136,8 @@ func (c *Client) SetClient(client *resty.Client) {
 		SetQueryParam("contenttype", "json").
 		SetHeader("Content-Type", "application/json").
 		SetRESTMode().
-		OnBeforeRequest(c.preRequestHook)
+		OnBeforeRequest(c.preRequestHook).
+		OnAfterResponse(c.postRequestHook)
 }
 
 func NewClient(appId int, identifier string, urlsig string) *Client {
@@ -121,6 +148,7 @@ func NewClient(appId int, identifier string, urlsig string) *Client {
 }
 
 func (c *Client) newRequest(ctx context.Context, serviceName string, command string) *resty.Request {
+	ctx = ctxutil.SetCommand(ctxutil.SetServiceName(ctx, serviceName), command)
 	req := c.client.NewRequest().SetContext(ctx)
 	req.SetPathParams(map[string]string{"serviceName": serviceName, "command": command})
 	return req
