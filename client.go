@@ -15,9 +15,10 @@ const (
 )
 
 const (
-	Service_IM_OPEN_LOGIN_SVC = "im_open_login_svc"
-	Service_OPEN_IM           = "openim"
-	Service_PROFILE           = "profile"
+	Service_IM_OPEN_LOGIN_SVC   = "im_open_login_svc"
+	Service_OPEN_IM             = "openim"
+	Service_PROFILE             = "profile"
+	Service_GROUP_OPEN_HTTP_SVC = "group_open_http_svc"
 )
 
 const (
@@ -31,6 +32,11 @@ const (
 	Command_QUERY_STATE    = "querystate"
 	// profile
 	Command_PORTRAIT_SET = "portrait_set"
+	// group_open_http_svc
+	Command_CREATE_GROUP          = "create_group"
+	Command_ADD_GROUP_MEMBER      = "add_group_member"
+	Command_GROUP_MSG_GET_SIMPLE  = "group_msg_get_simple"
+	Command_GET_GROUP_MEMBER_INFO = "get_group_member_info"
 )
 
 type IMResponse struct {
@@ -104,7 +110,7 @@ func (c *Client) SetClient(client *resty.Client) {
 		SetQueryParam("contenttype", "json").
 		SetHeader("Content-Type", "application/json").
 		SetRESTMode().
-		SetPreRequestHook(c.preRequestHook)
+		OnBeforeRequest(c.preRequestHook)
 }
 
 func NewClient(appId int, identifier string, urlsig string) *Client {
