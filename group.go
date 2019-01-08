@@ -2,7 +2,7 @@ package tencentcloud_im
 
 import (
 	"context"
-	"github.com/QuantumGhost/tencentcloud-im/consts"
+	"github.com/leapthinking/tencentcloud-im/consts"
 )
 
 type GroupAppDefinedDataItem struct {

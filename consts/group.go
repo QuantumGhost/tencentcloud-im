@@ -2,7 +2,7 @@ package consts
 
 import (
 	"database/sql/driver"
-	"github.com/QuantumGhost/tencentcloud-im/errors"
+	"github.com/leapthinking/tencentcloud-im/errors"
 )
 
 type ApplyJoinOption string
