@@ -1,4 +1,4 @@
-module github.com/QuantumGhost/tencentcloud-im
+module github.com/leapthinking/tencentcloud-im
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
