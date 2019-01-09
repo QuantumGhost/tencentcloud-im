@@ -3,6 +3,7 @@ package tencentcloud_im
 import (
 	"context"
 	"github.com/leapthinking/tencentcloud-im/consts"
+	"github.com/leapthinking/tencentcloud-im/types"
 )
 
 type GroupAppDefinedDataItem struct {
@@ -13,6 +14,12 @@ type GroupAppDefinedDataItem struct {
 type AppMemberDefinedDataItem struct {
 	Key   string `json:"Key"`
 	Value string `json:"Value"`
+}
+
+type CreateGroupMemberItem struct {
+	Member_Account       string                     `json:"Member_Account"`
+	Role                 consts.GroupRole           `json:"Role;omitempty"`
+	AppMemberDefinedData []AppMemberDefinedDataItem `json:"AppMemberDefinedData;omitempty"`
 }
 
 type CreateGroupRequest struct {
@@ -28,6 +35,7 @@ type CreateGroupRequest struct {
 	MaxMemberCount  int                       `json:"MaxMemberCount;omitempty"`
 	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption;omitempty"`
 	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData;omitempty"`
+	MemberList      []CreateGroupMemberItem   `json:"MemberList;omitempty"`
 }
 
 type CreateGroupResponse struct {
@@ -54,14 +62,10 @@ func (c *Client) CreateGroup(ctx context.Context, name string, groupType consts.
 	return result
 }
 
-type addGroupMemberItem struct {
-	Member_Account string `json:"Member_Account"`
-}
-
 type AddGroupMemberRequest struct {
-	GroupId    string               `json:"GroupId"`
-	Silence    int                  `json:"Silence;omitempty"`
-	MemberList []addGroupMemberItem `json:"MemberList"`
+	GroupId    string                `json:"GroupId"`
+	Silence    int                   `json:"Silence;omitempty"`
+	MemberList []types.MinimalMember `json:"MemberList"`
 }
 
 type AddGroupMemberOpt interface {
@@ -80,9 +84,9 @@ type AddGroupMemberResponse struct {
 
 func (c *Client) AddGroupMember(ctx context.Context, groupId string, im_ids []string, opts ...AddGroupMemberOpt) *AddGroupMemberResponse {
 	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_ADD_GROUP_MEMBER)
-	members := make([]addGroupMemberItem, len(im_ids))
+	members := make([]types.MinimalMember, len(im_ids))
 	for index, im_id := range im_ids {
-		members[index].Member_Account = im_id
+		members[index].MemberAccount = im_id
 	}
 	payload := AddGroupMemberRequest{GroupId: groupId, MemberList: members}
 	for _, opt := range opts {

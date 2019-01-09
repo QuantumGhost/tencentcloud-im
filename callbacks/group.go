@@ -1,15 +1,16 @@
 package callbacks
 
-type DestinationMemberItem struct {
-	MemberAccount string `json:"Member_Account"`
-}
+import (
+	"github.com/leapthinking/tencentcloud-im/consts"
+	"github.com/leapthinking/tencentcloud-im/types"
+)
 
 type CallbackBeforeInviteJoinGroupPayload struct {
-	CallbackCommand    string                  `json:"CallbackCommand"`
-	GroupID            string                  `json:"GroupId"`
-	Type               string                  `json:"Type"`
-	OperatorAccount    string                  `json:"Operator_Account"`
-	DestinationMembers []DestinationMemberItem `json:"DestinationMembers"`
+	CallbackCommand    string                `json:"CallbackCommand"`
+	GroupID            string                `json:"GroupId"`
+	Type               string                `json:"Type"`
+	OperatorAccount    string                `json:"Operator_Account"`
+	DestinationMembers []types.MinimalMember `json:"DestinationMembers"`
 }
 
 type CallbackBeforeInviteJoinGroupResponse struct {
@@ -17,30 +18,22 @@ type CallbackBeforeInviteJoinGroupResponse struct {
 	RefusedMembers_Account []string `json:"RefusedMembers_Account"`
 }
 
-type NewMemberListItem struct {
-	MemberAccount string `json:"Member_Account"`
-}
-
 type CallbackAfterNewMemberJoinPayload struct {
-	CallbackCommand string              `json:"CallbackCommand"`
-	GroupID         string              `json:"GroupId"`
-	Type            string              `json:"Type"`
-	JoinType        string              `json:"JoinType"`
-	OperatorAccount string              `json:"Operator_Account"`
-	NewMemberList   []NewMemberListItem `json:"NewMemberList"`
-}
-
-type ExitMemberListItem struct {
-	MemberAccount string `json:"Member_Account"`
+	CallbackCommand string                `json:"CallbackCommand"`
+	GroupID         string                `json:"GroupId"`
+	Type            string                `json:"Type"`
+	JoinType        string                `json:"JoinType"`
+	OperatorAccount string                `json:"Operator_Account"`
+	NewMemberList   []types.MinimalMember `json:"NewMemberList"`
 }
 
 type CallbackAfterMemberExitPayload struct {
-	CallbackCommand string               `json:"CallbackCommand"`
-	GroupID         string               `json:"GroupId"`
-	Type            string               `json:"Type"`
-	ExitType        string               `json:"ExitType"`
-	OperatorAccount string               `json:"Operator_Account"`
-	ExitMemberList  []ExitMemberListItem `json:"ExitMemberList"`
+	CallbackCommand string                `json:"CallbackCommand"`
+	GroupID         string                `json:"GroupId"`
+	Type            string                `json:"Type"`
+	ExitType        string                `json:"ExitType"`
+	OperatorAccount string                `json:"Operator_Account"`
+	ExitMemberList  []types.MinimalMember `json:"ExitMemberList"`
 }
 
 type UserDefinedDataListItem struct {
@@ -58,4 +51,14 @@ type CallbackAfterGroupInfoChangedPayload struct {
 	Notification        string                    `json:"Notification"`
 	FaceURL             string                    `json:"FaceUrl"`
 	UserDefinedDataList []UserDefinedDataListItem `json:"UserDefinedDataList"`
+}
+
+type CallbackBeforeCreateGroupPayload struct {
+	CallbackCommand string                `json:"CallbackCommand"`
+	OperatorAccount string                `json:"Operator_Account"`
+	OwnerAccount    string                `json:"Owner_Account"`
+	Type            consts.GroupType      `json:"Type"`
+	Name            string                `json:"Name"`
+	CreatedNum      int                   `json:"CreatedNum"`
+	MemberList      []types.MinimalMember `json:"MemberList"`
 }
