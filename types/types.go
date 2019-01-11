@@ -1,6 +1,6 @@
 package types
 
-// A minimal member obect only containing member's im id (a.k.a member account)
+// A minimal member object only containing member's account id
 type MinimalMember struct {
 	MemberAccount string `json:"Member_Account"`
 }
