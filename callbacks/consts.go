@@ -15,4 +15,6 @@ const (
 	CallbackAfterMemberExit = groupCommandPrefix + "CallbackAfterMemberExit"
 	// 创建群组之前回调
 	CallbackBeforeCreateGroup = groupCommandPrefix + "CallbackBeforeCreateGroup"
+	// 群组资料修改之后回调
+	CallbackAfterGroupInfoChanged = groupCommandPrefix + "CallbackAfterGroupInfoChanged"
 )
