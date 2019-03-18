@@ -189,3 +189,29 @@ func (c *Client) GetGroupMemberInfo(ctx context.Context, groupId string, opts ..
 	}
 	return result
 }
+
+type DeleteGroupMemberRequest struct {
+	GroupID            string   `json:"GroupId"`
+	Silence            int64    `json:"Silence"`
+	Reason             string   `json:"Reason"`
+	MemberToDelAccount []string `json:"MemberToDel_Account"`
+}
+
+type DeleteGroupMemberOpt interface {
+	ApplyToDeleteGroupMemberRequest(request *DeleteGroupMemberRequest)
+}
+
+func (c *Client) DeleteGroupMember(ctx context.Context, groupId string, imIds []string, opts ...DeleteGroupMemberOpt) *IMResponse {
+	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_DELETE_GROUP_MEMBER)
+	payload := DeleteGroupMemberRequest{GroupID: groupId, MemberToDelAccount: imIds}
+	for _, opt := range opts {
+		opt.ApplyToDeleteGroupMemberRequest(&payload)
+	}
+	result := &IMResponse{}
+	_, err := req.SetResult(result).SetBody(payload).Post(tencentCloudIMAPIEndpoint)
+	if err != nil {
+		result.internal = err
+		return result
+	}
+	return result
+}
