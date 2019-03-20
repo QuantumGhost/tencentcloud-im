@@ -100,6 +100,11 @@ type Client struct {
 
 func (c *Client) preRequestHook(_ *resty.Client, req *resty.Request) error {
 	req.SetQueryParam("random", strconv.Itoa(rand.Intn(1<<31-1)))
+	// NOTE(QuantumGhost): some TencentCloud IM API does not set
+	// `ContentType: application/json` regarless of  `contenttype=json`
+	// in query string.
+	// here we set the fallback content type to avoid result parsing issues.
+	req.ExpectContentType("application/json")
 	return nil
 }
 
