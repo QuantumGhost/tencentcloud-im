@@ -238,6 +238,6 @@ func (c *Client) ModifyGroupMemberInfo(ctx context.Context, groupId string, imId
 		opt.ApplyToModifyGroupMemberInfoRequest(&payload)
 	}
 	result := &IMResponse{}
-	c.makeRequest(req, payload, result)
+	c.sendRequest(req, payload, result)
 	return result
 }

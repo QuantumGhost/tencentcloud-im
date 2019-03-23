@@ -49,6 +49,10 @@ type IMResponse struct {
 	imErr        IMError
 }
 
+func (r *IMResponse) setInternalError(err error) {
+	r.internal = err
+}
+
 type IMError interface {
 	error
 	ErrorInfo() string
@@ -131,4 +135,15 @@ func (c *Client) newRequest(ctx context.Context, serviceName string, command str
 	req := c.client.NewRequest().SetContext(ctx)
 	req.SetPathParams(map[string]string{"serviceName": serviceName, "command": command})
 	return req
+}
+
+type hasInternalError interface {
+	setInternalError(err error)
+}
+
+func (c *Client) sendRequest(req *resty.Request, payload interface{}, response hasInternalError) {
+	_, err := req.SetResult(response).SetBody(payload).Post(tencentCloudIMAPIEndpoint)
+	if err != nil {
+		response.setInternalError(err)
+	}
 }
