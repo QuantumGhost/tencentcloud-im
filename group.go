@@ -18,24 +18,24 @@ type AppMemberDefinedDataItem struct {
 
 type CreateGroupMemberItem struct {
 	Member_Account       string                     `json:"Member_Account"`
-	Role                 consts.GroupRole           `json:"Role;omitempty"`
-	AppMemberDefinedData []AppMemberDefinedDataItem `json:"AppMemberDefinedData;omitempty"`
+	Role                 consts.GroupRole           `json:"Role,omitempty"`
+	AppMemberDefinedData []AppMemberDefinedDataItem `json:"AppMemberDefinedData,omitempty"`
 }
 
 type CreateGroupRequest struct {
 	// required
 	Type consts.GroupType `json:"Type"`
-	Name string           `json:"Name;omitempty"`
+	Name string           `json:"Name,omitempty"`
 	// optional
-	Owner_Account   string                    `json:"Owner_Account;omitempty"`
-	GroupId         string                    `json:"GroupId;omitempty"`
-	Introduction    string                    `json:"Introduction;omitempty"`
-	Notification    string                    `json:"Notification;omitempty"`
-	FaceUrl         string                    `json:"FaceUrl;omitempty"`
-	MaxMemberCount  int                       `json:"MaxMemberCount;omitempty"`
-	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption;omitempty"`
-	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData;omitempty"`
-	MemberList      []CreateGroupMemberItem   `json:"MemberList;omitempty"`
+	Owner_Account   string                    `json:"Owner_Account,omitempty"`
+	GroupId         string                    `json:"GroupId,omitempty"`
+	Introduction    string                    `json:"Introduction,omitempty"`
+	Notification    string                    `json:"Notification,omitempty"`
+	FaceUrl         string                    `json:"FaceUrl,omitempty"`
+	MaxMemberCount  int                       `json:"MaxMemberCount,omitempty"`
+	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption,omitempty"`
+	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData,omitempty"`
+	MemberList      []CreateGroupMemberItem   `json:"MemberList,omitempty"`
 }
 
 type CreateGroupResponse struct {
@@ -64,7 +64,7 @@ func (c *Client) CreateGroup(ctx context.Context, name string, groupType consts.
 
 type AddGroupMemberRequest struct {
 	GroupId    string                `json:"GroupId"`
-	Silence    int                   `json:"Silence;omitempty"`
+	Silence    int                   `json:"Silence,omitempty"`
 	MemberList []types.MinimalMember `json:"MemberList"`
 }
 
@@ -104,7 +104,7 @@ func (c *Client) AddGroupMember(ctx context.Context, groupId string, im_ids []st
 type GroupMsgGetSimpleRequest struct {
 	GroupId      string `json:"GroupId"`
 	ReqMsgNumber int    `json:"ReqMsgNumber"`
-	ReqMsgSeq    *int   `json:"ReqMsgSeq;omitempty"`
+	ReqMsgSeq    *int   `json:"ReqMsgSeq,omitempty"`
 }
 
 type GroupMsgBody struct {
@@ -147,11 +147,11 @@ func (c *Client) GroupMsgGetSimple(ctx context.Context, groupId string, msgNumbe
 
 type GetGroupMemberInfoRequest struct {
 	GroupId                          string   `json:"GroupId"`
-	MemberInfoFilter                 []string `json:"MemberInfoFilter;omitempty"`
-	MemberRoleFilter                 []string `json:"MemberRoleFilter;omitempty"`
-	AppDefinedDataFilter_GroupMember []string `json:"AppDefinedDataFilter_GroupMember;omitempty"`
-	Limit                            int      `json:"Limit;omitempty"`
-	Offset                           int      `json:"Offset;omitempty"`
+	MemberInfoFilter                 []string `json:"MemberInfoFilter,omitempty"`
+	MemberRoleFilter                 []string `json:"MemberRoleFilter,omitempty"`
+	AppDefinedDataFilter_GroupMember []string `json:"AppDefinedDataFilter_GroupMember,omitempty"`
+	Limit                            int      `json:"Limit,omitempty"`
+	Offset                           int      `json:"Offset,omitempty"`
 }
 
 type GetGroupMemberInfoOpt interface {
