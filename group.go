@@ -219,7 +219,7 @@ func (c *Client) DeleteGroupMember(ctx context.Context, groupId string, imIds []
 type ModifyGroupMemberInfoRequest struct {
 	GroupID              string                    `json:"GroupId"`
 	MemberAccount        string                    `json:"Member_Account"`
-	Role                 string                    `json:"Role,omitempty"`
+	Role                 consts.GroupRole          `json:"Role,omitempty"`
 	MsgFlag              string                    `json:"MsgFlag,omitempty"`
 	NameCard             string                    `json:"NameCard,omitempty"`
 	AppMemberDefinedData []GroupAppDefinedDataItem `json:"AppMemberDefinedData,omitempty"`
@@ -236,6 +236,33 @@ func (c *Client) ModifyGroupMemberInfo(ctx context.Context, groupId string, imId
 	}
 	for _, opt := range opts {
 		opt.ApplyToModifyGroupMemberInfoRequest(&payload)
+	}
+	result := &IMResponse{}
+	c.sendRequest(req, payload, result)
+	return result
+}
+
+type ModifyGroupBaseInfoRequest struct {
+	GroupID         string                    `json:"GroupId"`
+	Name            string                    `json:"Name"`
+	Introduction    string                    `json:"Introduction"`
+	Notification    string                    `json:"Notification"`
+	FaceURL         string                    `json:"FaceUrl"`
+	MaxMemberNum    int64                     `json:"MaxMemberNum"`
+	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption"`
+	ShutUpAllMember string                    `json:"ShutUpAllMember"`
+	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData"`
+}
+
+type ModifyGroupBaseInfoOpt interface {
+	ApplyModifyGroupBaseInfoRequest(req *ModifyGroupBaseInfoRequest)
+}
+
+func (c *Client) ModifyGroupBaseInfo(ctx context.Context, groupId string, opts ...ModifyGroupBaseInfoOpt) *IMResponse {
+	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_MODIFY_GROUP_BASE_INFO)
+	payload := ModifyGroupBaseInfoRequest{GroupID: groupId}
+	for _, opt := range opts {
+		opt.ApplyModifyGroupBaseInfoRequest(&payload)
 	}
 	result := &IMResponse{}
 	c.sendRequest(req, payload, result)

@@ -59,5 +59,6 @@ func (t *GroupType) Scan(src interface{}) error {
 type GroupRole string
 
 const (
-	GroupRoleAdmin GroupRole = "Admin"
+	GroupRoleAdmin  GroupRole = "Admin"
+	GroupRoleMember GroupRole = "Member"
 )

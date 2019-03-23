@@ -39,6 +39,7 @@ const (
 	Command_GET_GROUP_MEMBER_INFO    = "get_group_member_info"
 	Command_DELETE_GROUP_MEMBER      = "delete_group_member"
 	Command_MODIFY_GROUP_MEMBER_INFO = "modify_group_member_info"
+	Command_MODIFY_GROUP_BASE_INFO   = "modify_group_base_info"
 )
 
 type IMResponse struct {
