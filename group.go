@@ -244,14 +244,14 @@ func (c *Client) ModifyGroupMemberInfo(ctx context.Context, groupId string, imId
 
 type ModifyGroupBaseInfoRequest struct {
 	GroupID         string                    `json:"GroupId"`
-	Name            string                    `json:"Name"`
-	Introduction    string                    `json:"Introduction"`
-	Notification    string                    `json:"Notification"`
-	FaceURL         string                    `json:"FaceUrl"`
-	MaxMemberNum    int64                     `json:"MaxMemberNum"`
-	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption"`
-	ShutUpAllMember string                    `json:"ShutUpAllMember"`
-	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData"`
+	Name            string                    `json:"Name,omitempty"`
+	Introduction    string                    `json:"Introduction,omitempty"`
+	Notification    string                    `json:"Notification,omitempty"`
+	FaceURL         string                    `json:"FaceUrl,omitempty"`
+	MaxMemberNum    int64                     `json:"MaxMemberNum,omitempty"`
+	ApplyJoinOption consts.ApplyJoinOption    `json:"ApplyJoinOption,omitempty"`
+	ShutUpAllMember string                    `json:"ShutUpAllMember,omitempty"`
+	AppDefinedData  []GroupAppDefinedDataItem `json:"AppDefinedData,omitempty"`
 }
 
 type ModifyGroupBaseInfoOpt interface {
