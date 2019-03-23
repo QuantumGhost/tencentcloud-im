@@ -215,3 +215,29 @@ func (c *Client) DeleteGroupMember(ctx context.Context, groupId string, imIds []
 	}
 	return result
 }
+
+type ModifyGroupMemberInfoRequest struct {
+	GroupID              string                    `json:"GroupId"`
+	MemberAccount        string                    `json:"Member_Account"`
+	Role                 string                    `json:"Role,omitempty"`
+	MsgFlag              string                    `json:"MsgFlag,omitempty"`
+	NameCard             string                    `json:"NameCard,omitempty"`
+	AppMemberDefinedData []GroupAppDefinedDataItem `json:"AppMemberDefinedData,omitempty"`
+}
+
+type ModifyGroupMemberInfoOpt interface {
+	ApplyToModifyGroupMemberInfoRequest(request *ModifyGroupMemberInfoRequest)
+}
+
+func (c *Client) ModifyGroupMemberInfo(ctx context.Context, groupId string, imId string, opts ...ModifyGroupMemberInfoOpt) *IMResponse {
+	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_MODIFY_GROUP_MEMBER_INFO)
+	payload := ModifyGroupMemberInfoRequest{
+		GroupID: groupId, MemberAccount: imId,
+	}
+	for _, opt := range opts {
+		opt.ApplyToModifyGroupMemberInfoRequest(&payload)
+	}
+	result := &IMResponse{}
+	c.makeRequest(req, payload, result)
+	return result
+}
