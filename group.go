@@ -268,3 +268,16 @@ func (c *Client) ModifyGroupBaseInfo(ctx context.Context, groupId string, opts .
 	c.sendRequest(req, payload, result)
 	return result
 }
+
+type ChangeGroupOwnerRequest struct {
+	GroupID         string `json:"GroupId"`
+	NewOwnerAccount string `json:"NewOwner_Account"`
+}
+
+func (c *Client) ChangeGroupOwner(ctx context.Context, groupId string, imId string) *IMResponse {
+	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_MODIFY_GROUP_BASE_INFO)
+	payload := ChangeGroupOwnerRequest{GroupID: groupId, NewOwnerAccount: imId}
+	result := &IMResponse{}
+	c.sendRequest(req, payload, result)
+	return result
+}
