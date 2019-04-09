@@ -2,6 +2,8 @@ package tencentcloud_im
 
 import (
 	"context"
+	"math/rand"
+
 	"github.com/leapthinking/tencentcloud-im/consts"
 	"github.com/leapthinking/tencentcloud-im/types"
 )
@@ -278,6 +280,88 @@ func (c *Client) ChangeGroupOwner(ctx context.Context, groupId string, imId stri
 	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_MODIFY_GROUP_BASE_INFO)
 	payload := ChangeGroupOwnerRequest{GroupID: groupId, NewOwnerAccount: imId}
 	result := &IMResponse{}
+	c.sendRequest(req, payload, result)
+	return result
+}
+
+type SendGroupMsgRequest struct {
+	GroupID               string           `json:"GroupId"`
+	Random                int64            `json:"Random"`
+	MsgPriority           GroupMsgPriority `json:"MsgPriority,omitempty"`
+	MsgBody               []MsgBody        `json:"MsgBody"`
+	FromAccount           string           `json:"From_Account,omitempty"`
+	OfflinePushInfo       *OfflinePushInfo `json:"OfflinePushInfo,omitempty"`
+	ForbidCallbackControl []string         `json:"ForbidCallbackControl,omitempty"`
+}
+
+type SendGroupMsgRequestOpt interface {
+	ApplyToSendGroupMsgRequest(req *SendGroupMsgRequest)
+}
+
+type sendGroupMsgRequestOptFunc func(req *SendGroupMsgRequest)
+
+func (f sendGroupMsgRequestOptFunc) ApplyToSendGroupMsgRequest(req *SendGroupMsgRequest) {
+	f(req)
+}
+
+const (
+	forbidBeforeSendMsgCallback = "ForbidBeforeSendMsgCallback"
+	forbidAfterSendMsgCallback  = "ForbidAfterSendMsgCallback"
+)
+
+func ForbidBeforeSendMsgCallback() SendGroupMsgRequestOpt {
+	return sendGroupMsgRequestOptFunc(func(req *SendGroupMsgRequest) {
+		for _, item := range req.ForbidCallbackControl {
+			if item == forbidBeforeSendMsgCallback {
+				return
+			}
+		}
+		req.ForbidCallbackControl = append(req.ForbidCallbackControl, forbidBeforeSendMsgCallback)
+	})
+}
+
+func ForbidAfterSendMsgCallback() SendGroupMsgRequestOpt {
+	return sendGroupMsgRequestOptFunc(func(req *SendGroupMsgRequest) {
+		for _, item := range req.ForbidCallbackControl {
+			if item == forbidAfterSendMsgCallback {
+				return
+			}
+		}
+		req.ForbidCallbackControl = append(req.ForbidCallbackControl, forbidAfterSendMsgCallback)
+	})
+}
+
+func SetFromAccount(from string) sendGroupMsgRequestOptFunc {
+	return sendGroupMsgRequestOptFunc(func(req *SendGroupMsgRequest) {
+		req.FromAccount = from
+	})
+}
+
+type GroupMsgPriority string
+
+const (
+	GroupMsgPriorityHigh   GroupMsgPriority = "High"
+	GroupMsgPriorityNormal                  = "Normal"
+	GroupMsgPriorityLow                     = "Low"
+	GroupMsgPriorityLowest                  = "Lowest"
+)
+
+type SendGroupMsgResponse struct {
+	IMResponse
+	MsgTime int64 `json:"MsgTime"`
+	MsgSeq  int64 `json:"MsgSeq"`
+}
+
+func (c *Client) SendGroupMsg(ctx context.Context, groupId string, msgBody []MsgBody, opts ...SendGroupMsgRequestOpt) *SendGroupMsgResponse {
+	req := c.newRequest(ctx, Service_GROUP_OPEN_HTTP_SVC, Command_SEND_GROUP_MSG)
+	payload := SendGroupMsgRequest{
+		GroupID: groupId, MsgBody: msgBody,
+		Random: int64(rand.Intn(1<<31 - 1)),
+	}
+	for _, opt := range opts {
+		opt.ApplyToSendGroupMsgRequest(&payload)
+	}
+	result := &SendGroupMsgResponse{}
 	c.sendRequest(req, payload, result)
 	return result
 }
